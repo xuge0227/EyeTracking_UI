@@ -13,23 +13,25 @@ import {
   ControllerIcon,
   EyeIcon,
   MenuIcon,
-  CloseIcon,
   ZoomIcon,
   FingerIcon,
   ModeIcon,
   BrightnessIcon,
   LightModeIcon,
+  WhiteLightIcon,
   FluorescentIcon,
-  ToggleOnIcon,
+  ExitIcon,
   ColorModeIcon,
   AnnotationIcon,
   ScreenshotIcon,
   RecordIcon,
   AIIcon,
   LayoutTileIcon,
+  TileViewIcon,
   LayoutStackIcon,
   View2DIcon,
   View3DIcon,
+  ViewModeIcon,
   ClickIcon,
 } from "./menu-icons";
 
@@ -42,7 +44,6 @@ interface Settings {
   controlMode: "light" | "standard" | "smooth";
   brightness: number;
   lightMode: "white" | "fluorescent";
-  fluorescentFinger: boolean;
   fluorescentMode: "bw" | "color" | "mono";
   annotation: boolean;
   aiAssistant: boolean;
@@ -62,7 +63,6 @@ export function EyeTrackingInterface() {
     controlMode: "standard",
     brightness: 70,
     lightMode: "white",
-    fluorescentFinger: false,
     fluorescentMode: "bw",
     annotation: false,
     aiAssistant: false,
@@ -160,97 +160,117 @@ export function EyeTrackingInterface() {
             className="absolute inset-0"
             style={{ zIndex: 100 }}
           >
-            {/* Right sidebar with navigation and close button */}
-            <motion.div
-              initial={{ opacity: 0, x: 20 }}
-              animate={{ opacity: 1, x: 0 }}
-              transition={{ delay: 0.1 }}
-              className="sidebar-panel absolute right-0 top-0 bottom-0 w-56 flex flex-col items-center py-12"
-              style={{ zIndex: 250 }}
-            >
-              {/* Close button at top */}
-              <MenuButton
-                icon={<CloseIcon className="w-full h-full stroke-[3]" />}
-                onClick={closeMenu}
-                size="lg"
-                variant="action"
-              />
-
-              {/* Spacer */}
-              <div className="flex-1" />
-
-              {/* Navigation menu in center */}
-              <div className="flex flex-col items-center gap-6">
-                {/* Settings button */}
-                <MenuButton
-                  icon={<SettingsIcon className="w-full h-full" />}
-                  isActive={mainMenu === "settings"}
-                  onClick={() => selectMainMenu("settings")}
-                  size="lg"
-                  variant="nav"
-                />
-                
-                {/* Settings submenu - appears below settings when selected */}
-                <AnimatePresence>
-                  {mainMenu === "settings" && (
-                    <motion.div
-                      initial={{ opacity: 0, height: 0 }}
-                      animate={{ opacity: 1, height: "auto" }}
-                      exit={{ opacity: 0, height: 0 }}
-                      className="flex flex-col items-center gap-4"
-                    >
-                      <MenuButton
-                        icon={<ControllerIcon className="w-full h-full" />}
-                        isActive={settingsSubmenu === "controller"}
-                        onClick={() => setSettingsSubmenu("controller")}
-                        size="md"
-                        variant="nav-sub"
-                      />
-                      <MenuButton
-                        icon={<EyeIcon className="w-full h-full" />}
-                        isActive={settingsSubmenu === "visual"}
-                        onClick={() => setSettingsSubmenu("visual")}
-                        size="md"
-                        variant="nav-sub"
-                      />
-                    </motion.div>
-                  )}
-                </AnimatePresence>
-                
-                {/* Quick settings button */}
-                <MenuButton
-                  icon={<QuickSettingsIcon className="w-full h-full" />}
-                  isActive={mainMenu === "quick"}
-                  onClick={() => selectMainMenu("quick")}
-                  size="lg"
-                  variant="nav"
-                />
-                
-                {/* Multiview button */}
-                <MenuButton
-                  icon={<MultiViewIcon className="w-full h-full" />}
-                  isActive={mainMenu === "multiview"}
-                  onClick={() => selectMainMenu("multiview")}
-                  size="lg"
-                  variant="nav"
-                />
-              </div>
-
-              {/* Spacer */}
-              <div className="flex-1" />
-            </motion.div>
-
-            {/* Current path indicator - bottom left with vertical line */}
+            {/* Current path indicator - top right */}
             <motion.div
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               transition={{ delay: 0.2 }}
-              className="absolute bottom-12 left-12 path-indicator"
-              style={{ zIndex: 50 }}
+              className="absolute top-12 right-64 path-indicator-right"
+              style={{ zIndex: 260 }}
             >
               <span className="text-foreground/80 text-3xl font-bold tracking-wider">
                 {getCurrentPath()}
               </span>
+            </motion.div>
+
+            {/* Right sidebar with navigation and exit button */}
+            <motion.div
+              initial={{ opacity: 0, x: 20 }}
+              animate={{ opacity: 1, x: 0 }}
+              transition={{ delay: 0.1 }}
+              className="sidebar-panel absolute right-6 top-0 bottom-0 w-44 flex flex-col items-center py-12"
+              style={{ zIndex: 250 }}
+            >
+              {/* Exit button - fixed at top with less bottom margin */}
+              <div className="mb-6">
+                <MenuButton
+                  icon={<ExitIcon className="w-full h-full" />}
+                  onClick={closeMenu}
+                  size="lg"
+                  variant="action"
+                />
+              </div>
+
+              {/* Navigation menu - fixed position in center */}
+              <div className="flex-1 flex flex-col items-center justify-center">
+                <div className="flex flex-col items-center gap-6">
+                  {/* Settings section - either button or expanded submenu */}
+                  <AnimatePresence mode="wait">
+                    {mainMenu !== "settings" ? (
+                      <motion.div
+                        key="settings-button"
+                        initial={{ opacity: 0, scale: 0.9 }}
+                        animate={{ opacity: 1, scale: 1 }}
+                        exit={{ opacity: 0, scale: 0.9 }}
+                        transition={{ duration: 0.2 }}
+                      >
+                        <MenuButton
+                          icon={<SettingsIcon className="w-full h-full" />}
+                          isActive={false}
+                          onClick={() => selectMainMenu("settings")}
+                          size="lg"
+                          variant="nav"
+                        />
+                      </motion.div>
+                    ) : (
+                      <motion.div
+                        key="settings-expanded"
+                        initial={{ opacity: 0, scale: 0.9 }}
+                        animate={{ opacity: 1, scale: 1 }}
+                        exit={{ opacity: 0, scale: 0.9 }}
+                        transition={{ duration: 0.2 }}
+                        className="settings-submenu-expanded flex flex-col items-center"
+                      >
+                        {/* Settings icon on border */}
+                        <motion.div 
+                          className="settings-icon-on-border"
+                          initial={{ opacity: 0, scale: 0.8 }}
+                          animate={{ opacity: 1, scale: 1 }}
+                          transition={{ delay: 0.1 }}
+                        >
+                          <SettingsIcon className="w-6 h-6 text-foreground/90" />
+                        </motion.div>
+                        
+                        {/* Submenu box */}
+                        <div className="settings-submenu-box flex flex-col items-center gap-4 py-4 px-4">
+                          <MenuButton
+                            icon={<EyeIcon className="w-full h-full" />}
+                            isActive={settingsSubmenu === "visual"}
+                            onClick={() => setSettingsSubmenu("visual")}
+                            size="lg"
+                            variant="nav-sub"
+                          />
+                          <MenuButton
+                            icon={<ControllerIcon className="w-full h-full" />}
+                            isActive={settingsSubmenu === "controller"}
+                            onClick={() => setSettingsSubmenu("controller")}
+                            size="lg"
+                            variant="nav-sub"
+                          />
+                        </div>
+                      </motion.div>
+                    )}
+                  </AnimatePresence>
+                  
+                  {/* Quick settings button */}
+                  <MenuButton
+                    icon={<QuickSettingsIcon className="w-full h-full" />}
+                    isActive={mainMenu === "quick"}
+                    onClick={() => selectMainMenu("quick")}
+                    size="lg"
+                    variant="nav"
+                  />
+                  
+                  {/* Multiview button */}
+                  <MenuButton
+                    icon={<MultiViewIcon className="w-full h-full" />}
+                    isActive={mainMenu === "multiview"}
+                    onClick={() => selectMainMenu("multiview")}
+                    size="lg"
+                    variant="nav"
+                  />
+                </div>
+              </div>
             </motion.div>
 
             {/* Center content area */}
@@ -264,15 +284,15 @@ export function EyeTrackingInterface() {
                     animate={{ opacity: 1, scale: 1 }}
                     exit={{ opacity: 0, scale: 0.95 }}
                     transition={{ duration: 0.2 }}
-                    className="flex flex-col gap-12"
+                    className="flex flex-col gap-14"
                   >
                     {/* Zoom ratio */}
-                    <div className="flex flex-col gap-5">
-                      <div className="flex items-center gap-4 text-foreground/60 text-xl tracking-wider mb-2">
-                        <ZoomIcon className="w-8 h-8" />
+                    <div className="flex flex-col gap-6">
+                      <div className="flex items-center gap-5 text-foreground/60 text-2xl tracking-wider mb-2">
+                        <ZoomIcon className="w-10 h-10" />
                         <span>缩放比例</span>
                       </div>
-                      <div className="flex gap-6">
+                      <div className="flex gap-16">
                         {(["1.5:1", "2:1", "3:1"] as const).map((ratio) => (
                           <OptionButton
                             key={ratio}
@@ -285,12 +305,12 @@ export function EyeTrackingInterface() {
                     </div>
 
                     {/* Finger clutch */}
-                    <div className="flex flex-col gap-5">
-                      <div className="flex items-center gap-4 text-foreground/60 text-xl tracking-wider mb-2">
-                        <FingerIcon className="w-8 h-8" />
+                    <div className="flex flex-col gap-6">
+                      <div className="flex items-center gap-5 text-foreground/60 text-2xl tracking-wider mb-2">
+                        <FingerIcon className="w-10 h-10" />
                         <span>指尖离合</span>
                       </div>
-                      <div className="flex gap-6">
+                      <div className="flex gap-16">
                         <OptionButton
                           label="开启"
                           isActive={settings.fingerClutch}
@@ -305,12 +325,12 @@ export function EyeTrackingInterface() {
                     </div>
 
                     {/* Control mode */}
-                    <div className="flex flex-col gap-5">
-                      <div className="flex items-center gap-4 text-foreground/60 text-xl tracking-wider mb-2">
-                        <ModeIcon className="w-8 h-8" />
+                    <div className="flex flex-col gap-6">
+                      <div className="flex items-center gap-5 text-foreground/60 text-2xl tracking-wider mb-2">
+                        <ModeIcon className="w-10 h-10" />
                         <span>操控模式</span>
                       </div>
-                      <div className="flex gap-6">
+                      <div className="flex gap-16">
                         {(["light", "standard", "smooth"] as const).map((mode) => (
                           <OptionButton
                             key={mode}
@@ -332,77 +352,58 @@ export function EyeTrackingInterface() {
                     animate={{ opacity: 1, scale: 1 }}
                     exit={{ opacity: 0, scale: 0.95 }}
                     transition={{ duration: 0.2 }}
-                    className="flex flex-col gap-12"
+                    className="flex flex-col gap-10"
                   >
                     {/* Brightness slider */}
-                    <div className="flex flex-col gap-5">
-                      <div className="flex items-center gap-4 text-foreground/60 text-xl tracking-wider mb-2">
-                        <BrightnessIcon className="w-8 h-8" />
+                    <div className="flex flex-col gap-6">
+                      <div className="flex items-center gap-5 text-foreground/60 text-2xl tracking-wider mb-2">
+                        <BrightnessIcon className="w-10 h-10" />
                         <span>立体显示器亮度</span>
                       </div>
                       <SliderControl
-                        icon={<BrightnessIcon className="w-full h-full" />}
-                        label=""
                         value={settings.brightness}
                         onChange={(v) => updateSetting("brightness", v)}
                       />
                     </div>
 
                     {/* Light mode */}
-                    <div className="flex flex-col gap-5">
-                      <div className="flex items-center gap-4 text-foreground/60 text-xl tracking-wider mb-2">
-                        <LightModeIcon className="w-8 h-8" />
+                    <div className="flex flex-col gap-6">
+                      <div className="flex items-center gap-5 text-foreground/60 text-2xl tracking-wider mb-2">
+                        <LightModeIcon className="w-10 h-10" />
                         <span>模式</span>
                       </div>
-                      <div className="flex gap-6">
+                      <div className="flex gap-16">
                         <OptionButton
-                          icon={<LightModeIcon className="w-full h-full" />}
+                          icon={<WhiteLightIcon className="w-full h-full" />}
                           label="白光"
                           isActive={settings.lightMode === "white"}
                           onClick={() => updateSetting("lightMode", "white")}
+                          compact
                         />
                         <OptionButton
                           icon={<FluorescentIcon className="w-full h-full" />}
                           label="荧光"
                           isActive={settings.lightMode === "fluorescent"}
                           onClick={() => updateSetting("lightMode", "fluorescent")}
+                          compact
                         />
                       </div>
                     </div>
 
-                    {/* Fluorescent finger switch */}
-                    <div className="flex flex-col gap-5">
-                      <div className="flex items-center gap-4 text-foreground/60 text-xl tracking-wider mb-2">
-                        <ToggleOnIcon className="w-8 h-8" />
-                        <span>荧光指尖开关</span>
-                      </div>
-                      <div className="flex gap-6">
-                        <OptionButton
-                          label="开"
-                          isActive={settings.fluorescentFinger}
-                          onClick={() => updateSetting("fluorescentFinger", true)}
-                        />
-                        <OptionButton
-                          label="关"
-                          isActive={!settings.fluorescentFinger}
-                          onClick={() => updateSetting("fluorescentFinger", false)}
-                        />
-                      </div>
-                    </div>
-
-                    {/* Fluorescent mode */}
-                    <div className="flex flex-col gap-5">
-                      <div className="flex items-center gap-4 text-foreground/60 text-xl tracking-wider mb-2">
-                        <ColorModeIcon className="w-8 h-8" />
+                    {/* Fluorescent mode - only enabled when fluorescent light mode is selected */}
+                    <div className="flex flex-col gap-6">
+                      <div className={`flex items-center gap-5 text-2xl tracking-wider mb-2 ${settings.lightMode === "fluorescent" ? "text-foreground/60" : "text-foreground/30"}`}>
+                        <ColorModeIcon className="w-10 h-10" />
                         <span>荧光模式</span>
                       </div>
-                      <div className="flex gap-6">
+                      <div className="flex gap-16">
                         {(["bw", "color", "mono"] as const).map((mode) => (
                           <OptionButton
                             key={mode}
                             label={mode === "bw" ? "黑白" : mode === "color" ? "彩色" : "单色"}
-                            isActive={settings.fluorescentMode === mode}
-                            onClick={() => updateSetting("fluorescentMode", mode)}
+                            isActive={settings.lightMode === "fluorescent" && settings.fluorescentMode === mode}
+                            onClick={() => settings.lightMode === "fluorescent" && updateSetting("fluorescentMode", mode)}
+                            disabled={settings.lightMode !== "fluorescent"}
                           />
                         ))}
                       </div>
@@ -418,40 +419,35 @@ export function EyeTrackingInterface() {
                     animate={{ opacity: 1, scale: 1 }}
                     exit={{ opacity: 0, scale: 0.95 }}
                     transition={{ duration: 0.2 }}
-                    className="flex flex-col gap-12"
+                    className="flex flex-col gap-14"
                   >
                     {/* Annotation */}
-                    <div className="flex flex-col gap-5">
-                      <div className="flex items-center gap-4 text-foreground/60 text-xl tracking-wider mb-2">
-                        <AnnotationIcon className="w-8 h-8" />
+                    <div className="flex flex-col gap-6">
+                      <div className="flex items-center gap-5 text-foreground/60 text-2xl tracking-wider mb-2">
+                        <AnnotationIcon className="w-10 h-10" />
                         <span>互动批注：右眼</span>
                       </div>
-                      <div className="flex gap-6">
+                      <div className="flex gap-16">
                         <OptionButton
-                          icon={<AnnotationIcon className="w-full h-full" />}
-                          label="开"
+                          label="开启"
                           isActive={settings.annotation}
                           onClick={() => updateSetting("annotation", true)}
                         />
                         <OptionButton
-                          label="关"
+                          label="关闭"
                           isActive={!settings.annotation}
                           onClick={() => updateSetting("annotation", false)}
                         />
                       </div>
                     </div>
 
-                    {/* Screenshot */}
-                    <div className="flex gap-6">
+                    {/* Screenshot and Record - side by side */}
+                    <div className="flex gap-16">
                       <OptionButton
                         icon={<ScreenshotIcon className="w-full h-full" />}
                         label="截屏"
                         onClick={() => console.log("Screenshot")}
                       />
-                    </div>
-
-                    {/* Record */}
-                    <div className="flex gap-6">
                       <OptionButton
                         icon={<RecordIcon className="w-full h-full" />}
                         label="录像"
@@ -460,20 +456,19 @@ export function EyeTrackingInterface() {
                     </div>
 
                     {/* AI assistant */}
-                    <div className="flex flex-col gap-5">
-                      <div className="flex items-center gap-4 text-foreground/60 text-xl tracking-wider mb-2">
-                        <AIIcon className="w-8 h-8" />
+                    <div className="flex flex-col gap-6">
+                      <div className="flex items-center gap-5 text-foreground/60 text-2xl tracking-wider mb-2">
+                        <AIIcon className="w-10 h-10" />
                         <span>AI语音助手</span>
                       </div>
-                      <div className="flex gap-6">
+                      <div className="flex gap-16">
                         <OptionButton
-                          icon={<AIIcon className="w-full h-full" />}
-                          label="开"
+                          label="开启"
                           isActive={settings.aiAssistant}
                           onClick={() => updateSetting("aiAssistant", true)}
                         />
                         <OptionButton
-                          label="关"
+                          label="关闭"
                           isActive={!settings.aiAssistant}
                           onClick={() => updateSetting("aiAssistant", false)}
                         />
@@ -490,23 +485,22 @@ export function EyeTrackingInterface() {
                     animate={{ opacity: 1, scale: 1 }}
                     exit={{ opacity: 0, scale: 0.95 }}
                     transition={{ duration: 0.2 }}
-                    className="flex flex-col gap-12"
+                    className="flex flex-col gap-14"
                   >
                     {/* Quick click */}
-                    <div className="flex flex-col gap-5">
-                      <div className="flex items-center gap-4 text-foreground/60 text-xl tracking-wider mb-2">
-                        <ClickIcon className="w-8 h-8" />
+                    <div className="flex flex-col gap-6">
+                      <div className="flex items-center gap-5 text-foreground/60 text-2xl tracking-wider mb-2">
+                        <ClickIcon className="w-10 h-10" />
                         <span>多画面快速点击</span>
                       </div>
-                      <div className="flex gap-6">
+                      <div className="flex gap-16">
                         <OptionButton
-                          icon={<ClickIcon className="w-full h-full" />}
-                          label="开"
+                          label="开启"
                           isActive={settings.quickClick}
                           onClick={() => updateSetting("quickClick", true)}
                         />
                         <OptionButton
-                          label="关"
+                          label="关闭"
                           isActive={!settings.quickClick}
                           onClick={() => updateSetting("quickClick", false)}
                         />
@@ -514,14 +508,14 @@ export function EyeTrackingInterface() {
                     </div>
 
                     {/* Layout mode */}
-                    <div className="flex flex-col gap-5">
-                      <div className="flex items-center gap-4 text-foreground/60 text-xl tracking-wider mb-2">
-                        <LayoutTileIcon className="w-8 h-8" />
+                    <div className="flex flex-col gap-6">
+                      <div className="flex items-center gap-5 text-foreground/60 text-2xl tracking-wider mb-2">
+                        <LayoutTileIcon className="w-10 h-10" />
                         <span>布局模式</span>
                       </div>
-                      <div className="flex gap-6">
+                      <div className="flex gap-16">
                         <OptionButton
-                          icon={<LayoutTileIcon className="w-full h-full" />}
+                          icon={<TileViewIcon className="w-full h-full" />}
                           label="平铺"
                           isActive={settings.layoutMode === "tile"}
                           onClick={() => updateSetting("layoutMode", "tile")}
@@ -536,12 +530,12 @@ export function EyeTrackingInterface() {
                     </div>
 
                     {/* View mode */}
-                    <div className="flex flex-col gap-5">
-                      <div className="flex items-center gap-4 text-foreground/60 text-xl tracking-wider mb-2">
-                        <View3DIcon className="w-8 h-8" />
+                    <div className="flex flex-col gap-6">
+                      <div className="flex items-center gap-5 text-foreground/60 text-2xl tracking-wider mb-2">
+                        <ViewModeIcon className="w-10 h-10" />
                         <span>视图模式</span>
                       </div>
-                      <div className="flex gap-6">
+                      <div className="flex gap-16">
                         <OptionButton
                           icon={<View2DIcon className="w-full h-full" />}
                           label="2D"

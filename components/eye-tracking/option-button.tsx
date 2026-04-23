@@ -1,7 +1,7 @@
 "use client";
 
 import { motion } from "framer-motion";
-import { ReactNode } from "react";
+import { ReactNode, useState, useRef } from "react";
 
 interface OptionButtonProps {
   icon?: ReactNode;
@@ -9,6 +9,7 @@ interface OptionButtonProps {
   isActive?: boolean;
   onClick?: () => void;
   disabled?: boolean;
+  compact?: boolean;
 }
 
 export function OptionButton({
@@ -17,18 +18,39 @@ export function OptionButton({
   isActive = false,
   onClick,
   disabled = false,
+  compact = false,
 }: OptionButtonProps) {
+  const [showFeedback, setShowFeedback] = useState(false);
+  const feedbackTimeoutRef = useRef<NodeJS.Timeout | null>(null);
+
+  const handleClick = (e: React.MouseEvent) => {
+    e.stopPropagation();
+    if (disabled) return;
+    
+    // Clear any existing timeout
+    if (feedbackTimeoutRef.current) {
+      clearTimeout(feedbackTimeoutRef.current);
+    }
+    
+    // Trigger feedback animation
+    setShowFeedback(true);
+    feedbackTimeoutRef.current = setTimeout(() => {
+      setShowFeedback(false);
+    }, 400);
+    
+    onClick?.();
+  };
+
   return (
     <motion.button
-      onClick={(e) => {
-        e.stopPropagation();
-        onClick?.();
-      }}
+      onClick={handleClick}
       disabled={disabled}
       className={`
-        option-button px-12 py-8 flex items-center gap-6 min-w-[220px]
+        option-button flex items-center justify-center gap-6 min-w-[240px]
+        ${compact ? "px-14 py-6" : "px-14 py-10"}
         ${isActive ? "selected" : ""}
-        ${disabled ? "opacity-40 cursor-not-allowed" : ""}
+        ${disabled ? "disabled" : ""}
+        ${showFeedback ? "button-feedback" : ""}
       `}
       whileHover={!disabled && !isActive ? {
         scale: 1.04,
@@ -42,11 +64,11 @@ export function OptionButton({
       }}
     >
       {icon && (
-        <div className={`option-icon w-10 h-10 flex-shrink-0 ${isActive ? "text-background" : "text-foreground/70"}`}>
+        <div className={`option-icon w-12 h-12 flex-shrink-0 ${isActive ? "text-background" : disabled ? "text-foreground/30" : "text-foreground/70"}`}>
           {icon}
         </div>
       )}
-      <span className={`option-label text-xl tracking-wide font-medium ${isActive ? "text-background" : "text-foreground/80"}`}>
+      <span className={`option-label text-2xl tracking-wide font-medium ${isActive ? "text-background" : disabled ? "text-foreground/30" : "text-foreground/80"}`}>
         {label}
       </span>
     </motion.button>

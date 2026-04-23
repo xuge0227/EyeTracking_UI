@@ -126,43 +126,69 @@
   }
 }
 
-/* Right sidebar panel - gray background with thick left border */
+/* Right sidebar panel - narrower gray background with thick left border */
 .sidebar-panel {
-  background: rgba(25, 25, 25, 0.98);
-  border-left: 6px solid rgba(80, 80, 80, 1);
-  border-radius: 105px;
+  background: rgba(25, 25, 25, 0.95);
+  border-left: 5px solid rgba(80, 80, 80, 1);
+  border-radius: 80px;
 }
 
-/* Navigation menu button - white icon no border, gradient + right line when active */
+/* Settings expanded submenu container */
+.settings-submenu-expanded {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  position: relative;
+}
+
+/* Settings icon on border - white filled circle on top edge */
+.settings-icon-on-border {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  background: rgba(255, 255, 255, 0.95);
+  border-radius: 50%;
+  position: relative;
+  z-index: 10;
+  margin-bottom: -16px;
+}
+
+.settings-icon-on-border svg {
+  color: #0a0a0a;
+}
+
+/* Settings submenu box - contains visual/controller buttons */
+.settings-submenu-box {
+  background: rgba(15, 15, 15, 0.95);
+  border: 2px solid rgba(80, 80, 80, 0.9);
+  border-radius: 20px;
+  padding-top: 20px;
+}
+
+/* Navigation menu button - white icon no border, subtle bg when active */
 .nav-menu-button {
   background: transparent;
   border: none;
-  border-radius: 12px;
+  border-radius: 14px;
   transition: all 0.25s ease;
   position: relative;
 }
 
-.nav-menu-button:hover {
-  background: rgba(255, 255, 255, 0.06);
-  box-shadow: 0 0 30px rgba(255, 255, 255, 0.12);
-  transform: scale(1.08);
+.nav-menu-button:hover:not(.active) {
+  background: rgba(255, 255, 255, 0.08);
+  box-shadow: 0 0 25px rgba(255, 255, 255, 0.1);
 }
 
 .nav-menu-button.active {
-  background: linear-gradient(to left, rgba(255, 255, 255, 0.98), rgba(255, 255, 255, 0.15));
-  transform: scale(1.3);
-  border-radius: 12px;
+  background: rgba(255, 255, 255, 0.95);
+  border-radius: 14px;
 }
 
-.nav-menu-button.active::after {
-  content: '';
-  position: absolute;
-  right: 0;
-  top: 0;
-  bottom: 0;
-  width: 5px;
+.nav-menu-button.active:hover {
   background: rgba(255, 255, 255, 1);
-  border-radius: 0 12px 12px 0;
+  box-shadow: 0 0 30px rgba(255, 255, 255, 0.2);
 }
 
 .nav-menu-button.active svg {
@@ -178,27 +204,19 @@
   position: relative;
 }
 
-.nav-submenu-button:hover {
-  background: rgba(255, 255, 255, 0.06);
-  box-shadow: 0 0 20px rgba(255, 255, 255, 0.1);
-  transform: scale(1.08);
+.nav-submenu-button:hover:not(.active) {
+  background: rgba(255, 255, 255, 0.08);
+  box-shadow: 0 0 15px rgba(255, 255, 255, 0.08);
 }
 
 .nav-submenu-button.active {
-  background: linear-gradient(to left, rgba(255, 255, 255, 0.98), rgba(255, 255, 255, 0.15));
-  transform: scale(1.3);
+  background: rgba(255, 255, 255, 0.95);
   border-radius: 10px;
 }
 
-.nav-submenu-button.active::after {
-  content: '';
-  position: absolute;
-  right: 0;
-  top: 0;
-  bottom: 0;
-  width: 4px;
+.nav-submenu-button.active:hover {
   background: rgba(255, 255, 255, 1);
-  border-radius: 0 10px 10px 0;
+  box-shadow: 0 0 25px rgba(255, 255, 255, 0.15);
 }
 
 .nav-submenu-button.active svg {
@@ -217,7 +235,7 @@
   font-size: 26px;
 }
 
-.menu-action-button:hover {
+.menu-action-button:hover:not(.active) {
   background: rgba(255, 255, 255, 0.08);
   border-color: rgba(255, 255, 255, 0.9);
   box-shadow: 0 0 30px rgba(255, 255, 255, 0.15);
@@ -227,6 +245,12 @@
 .menu-action-button.active {
   background: rgba(255, 255, 255, 0.95);
   border-color: rgba(255, 255, 255, 1);
+}
+
+.menu-action-button.active:hover {
+  background: rgba(255, 255, 255, 1);
+  box-shadow: 0 0 35px rgba(255, 255, 255, 0.2);
+  transform: scale(1.05);
 }
 
 .menu-action-button.active svg {
@@ -240,10 +264,18 @@
   transition: all 0.2s ease;
 }
 
-.option-button:hover {
+.option-button:hover:not(.disabled):not(.selected) {
   background: rgba(255, 255, 255, 0.08);
   border-color: rgba(255, 255, 255, 0.7);
   box-shadow: 0 0 25px rgba(255, 255, 255, 0.15);
+  transform: scale(1.04);
+}
+
+/* Hover on selected option button - white background black text */
+.option-button.selected:hover {
+  background: rgba(255, 255, 255, 1);
+  border-color: rgba(255, 255, 255, 1);
+  box-shadow: 0 0 30px rgba(255, 255, 255, 0.25);
   transform: scale(1.04);
 }
 
@@ -256,6 +288,51 @@
 .option-button.selected .option-icon,
 .option-button.selected .option-label {
   color: #0a0a0a;
+}
+
+/* Button click feedback animation */
+@keyframes button-pulse {
+  0% {
+    box-shadow: 0 0 0 0 rgba(255, 255, 255, 0.7);
+  }
+  50% {
+    box-shadow: 0 0 0 12px rgba(255, 255, 255, 0);
+  }
+  100% {
+    box-shadow: 0 0 0 0 rgba(255, 255, 255, 0);
+  }
+}
+
+.button-feedback {
+  animation: button-pulse 0.4s ease-out;
+}
+
+/* Disabled state with dashed border */
+.option-button.disabled {
+  border-style: dashed;
+  border-color: rgba(255, 255, 255, 0.25);
+  cursor: not-allowed;
+  opacity: 0.5;
+}
+
+.option-button.disabled:hover {
+  transform: none;
+  box-shadow: none;
+  background: transparent;
+}
+
+/* Slider button - large plus/minus buttons */
+.slider-button {
+  background: transparent;
+  border: 4px solid rgba(255, 255, 255, 0.5);
+  border-radius: 12px;
+  transition: all 0.2s ease;
+}
+
+.slider-button:hover {
+  background: rgba(255, 255, 255, 0.08);
+  border-color: rgba(255, 255, 255, 0.7);
+  box-shadow: 0 0 25px rgba(255, 255, 255, 0.15);
 }
 
 /* Slider styling */
@@ -299,14 +376,55 @@ input[type="range"]::-moz-range-thumb {
   border: 3px solid rgba(255, 255, 255, 1);
 }
 
-/* Path indicator */
-.path-indicator {
+/* Mode toggle container - compact horizontal toggle */
+.mode-toggle-container {
+  display: flex;
+  background: rgba(255, 255, 255, 0.05);
+  border: 2px solid rgba(255, 255, 255, 0.3);
+  border-radius: 16px;
+  padding: 4px;
+  gap: 4px;
+}
+
+.mode-toggle-btn {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 16px 32px;
+  border-radius: 12px;
+  background: transparent;
+  border: none;
+  color: rgba(255, 255, 255, 0.6);
+  font-size: 1.25rem;
+  font-weight: 500;
+  letter-spacing: 0.05em;
+  transition: all 0.25s ease;
+  cursor: pointer;
+}
+
+.mode-toggle-btn:hover:not(.active) {
+  background: rgba(255, 255, 255, 0.08);
+  color: rgba(255, 255, 255, 0.8);
+}
+
+.mode-toggle-btn.active {
+  background: rgba(255, 255, 255, 0.95);
+  color: #0a0a0a;
+  box-shadow: 0 0 20px rgba(255, 255, 255, 0.15);
+}
+
+.mode-toggle-btn.active svg {
+  color: #0a0a0a;
+}
+
+/* Path indicator - right side (top right) */
+.path-indicator-right {
   display: flex;
   align-items: center;
   gap: 16px;
 }
 
-.path-indicator::before {
+.path-indicator-right::after {
   content: '';
   display: block;
   width: 5px;

@@ -1,7 +1,7 @@
 "use client";
 
 import { motion } from "framer-motion";
-import { ReactNode } from "react";
+import { ReactNode, useState, useRef } from "react";
 
 interface MenuButtonProps {
   icon: ReactNode;
@@ -22,6 +22,25 @@ export function MenuButton({
   showLabel = false,
   variant = "nav",
 }: MenuButtonProps) {
+  const [showFeedback, setShowFeedback] = useState(false);
+  const feedbackTimeoutRef = useRef<NodeJS.Timeout | null>(null);
+
+  const handleClick = (e: React.MouseEvent) => {
+    e.stopPropagation();
+    
+    // Clear any existing timeout
+    if (feedbackTimeoutRef.current) {
+      clearTimeout(feedbackTimeoutRef.current);
+    }
+    
+    // Trigger feedback animation
+    setShowFeedback(true);
+    feedbackTimeoutRef.current = setTimeout(() => {
+      setShowFeedback(false);
+    }, 400);
+    
+    onClick?.();
+  };
   // Larger sizes for eye tracking
   const sizeClasses = {
     sm: "w-20 h-20",
@@ -54,14 +73,12 @@ export function MenuButton({
 
   return (
     <motion.button
-      onClick={(e) => {
-        e.stopPropagation();
-        onClick?.();
-      }}
+      onClick={handleClick}
       className={`
         ${buttonClass} flex flex-col items-center justify-center gap-2
         ${sizeClasses[size]}
         ${isActive ? "active" : ""}
+        ${showFeedback ? "button-feedback" : ""}
       `}
       whileHover={!isActive ? {
         scale: 1.08,

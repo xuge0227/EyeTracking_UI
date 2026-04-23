@@ -44,8 +44,8 @@ export function GazeCursor() {
     };
   }, []);
 
-  // Size based on velocity (30% variation)
-  const baseSize = 80;
+  // Size based on velocity (30% variation) - doubled base size
+  const baseSize = 160;
   const minScale = 0.7;
   const maxVelocity = 2;
   const normalizedVelocity = Math.min(velocity / maxVelocity, 1);
@@ -55,7 +55,7 @@ export function GazeCursor() {
 
   return (
     <motion.div
-      className="pointer-events-none fixed z-50"
+      className="pointer-events-none fixed z-[9999]"
       animate={{
         x: position.x - offset,
         y: position.y - offset,
@@ -68,34 +68,36 @@ export function GazeCursor() {
         mass: 0.5,
       }}
     >
-      {/* Outer glow only - minimal */}
+      {/* Outer glow - enhanced visibility */}
       <motion.div
         className="absolute rounded-full"
         style={{
           width: currentSize,
           height: currentSize,
-          boxShadow: "0 0 30px rgba(255, 255, 255, 0.2), 0 0 60px rgba(255, 255, 255, 0.1)",
+          boxShadow: "0 0 60px rgba(255, 255, 255, 0.35), 0 0 120px rgba(255, 255, 255, 0.2), 0 0 180px rgba(255, 255, 255, 0.1)",
         }}
         animate={{
           scale: [1, 1.05, 1],
           opacity: [0.7, 1, 0.7],
         }}
         transition={{
-          duration: 2,
+          duration: 2.5,
           repeat: Infinity,
           ease: "easeInOut",
         }}
       />
 
-      {/* Main ring - glassmorphism, no inner glow */}
+      {/* Main ring - glassmorphism with radial gradient from edge to center */}
       <motion.div
         className="absolute rounded-full"
         style={{
           width: currentSize,
           height: currentSize,
-          background: "rgba(255, 255, 255, 0.03)",
-          backdropFilter: "blur(8px)",
-          border: "1.5px solid rgba(255, 255, 255, 0.3)",
+          background: "radial-gradient(circle at center, rgba(255, 255, 255, 0) 0%, rgba(255, 255, 255, 0) 30%, rgba(255, 255, 255, 0.04) 60%, rgba(255, 255, 255, 0.12) 100%)",
+          backdropFilter: "blur(6px)",
+          border: "2px solid rgba(255, 255, 255, 0.45)",
+          WebkitMaskImage: "radial-gradient(circle at center, rgba(0,0,0,0.3) 0%, rgba(0,0,0,0.5) 40%, rgba(0,0,0,1) 100%)",
+          maskImage: "radial-gradient(circle at center, rgba(0,0,0,0.3) 0%, rgba(0,0,0,0.5) 40%, rgba(0,0,0,1) 100%)",
         }}
       />
     </motion.div>

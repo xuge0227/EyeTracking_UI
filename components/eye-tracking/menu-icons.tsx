@@ -5,8 +5,8 @@
 export function SettingsIcon({ className }: { className?: string }) {
   return (
     <svg className={className} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
+      <path d="M12.22 2h-.44a2 2 0 00-2 2v.18a2 2 0 01-1 1.73l-.43.25a2 2 0 01-2 0l-.15-.08a2 2 0 00-2.73.73l-.22.38a2 2 0 00.73 2.73l.15.1a2 2 0 011 1.72v.51a2 2 0 01-1 1.74l-.15.09a2 2 0 00-.73 2.73l.22.38a2 2 0 002.73.73l.15-.08a2 2 0 012 0l.43.25a2 2 0 011 1.73V20a2 2 0 002 2h.44a2 2 0 002-2v-.18a2 2 0 011-1.73l.43-.25a2 2 0 012 0l.15.08a2 2 0 002.73-.73l.22-.39a2 2 0 00-.73-2.73l-.15-.08a2 2 0 01-1-1.74v-.5a2 2 0 011-1.74l.15-.09a2 2 0 00.73-2.73l-.22-.38a2 2 0 00-2.73-.73l-.15.08a2 2 0 01-2 0l-.43-.25a2 2 0 01-1-1.73V4a2 2 0 00-2-2z" />
       <circle cx="12" cy="12" r="3" />
-      <path d="M12 1v4M12 19v4M4.22 4.22l2.83 2.83M16.95 16.95l2.83 2.83M1 12h4M19 12h4M4.22 19.78l2.83-2.83M16.95 7.05l2.83-2.83" />
     </svg>
   );
 }
@@ -22,10 +22,20 @@ export function QuickSettingsIcon({ className }: { className?: string }) {
 export function MultiViewIcon({ className }: { className?: string }) {
   return (
     <svg className={className} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
-      <rect x="3" y="3" width="7" height="7" rx="1" />
-      <rect x="14" y="3" width="7" height="7" rx="1" />
-      <rect x="3" y="14" width="7" height="7" rx="1" />
-      <rect x="14" y="14" width="7" height="7" rx="1" />
+      {/* Main screen */}
+      <rect x="2" y="3" width="12" height="9" rx="1" />
+      <line x1="8" y1="12" x2="8" y2="14" />
+      <line x1="5" y1="14" x2="11" y2="14" />
+      {/* Connected screen */}
+      <rect x="14" y="6" width="8" height="6" rx="1" />
+      <line x1="18" y1="12" x2="18" y2="13.5" />
+      <line x1="16" y1="13.5" x2="20" y2="13.5" />
+      {/* Connection line */}
+      <path d="M12 7h2" strokeDasharray="2 1" />
+      {/* Plus indicator */}
+      <circle cx="18" cy="18" r="4" />
+      <line x1="18" y1="16" x2="18" y2="20" />
+      <line x1="16" y1="18" x2="20" y2="18" />
     </svg>
   );
 }
@@ -91,8 +101,14 @@ export function FingerIcon({ className }: { className?: string }) {
 export function ModeIcon({ className }: { className?: string }) {
   return (
     <svg className={className} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
-      <circle cx="12" cy="12" r="10" />
-      <path d="M12 2a10 10 0 010 20" fill="currentColor" fillOpacity="0.3" />
+      {/* Joystick base */}
+      <ellipse cx="12" cy="20" rx="7" ry="2" />
+      {/* Joystick stick */}
+      <path d="M12 20V10" />
+      {/* Joystick ball/handle */}
+      <circle cx="12" cy="8" r="4" />
+      {/* Direction indicators */}
+      <path d="M6 8h2M16 8h2M12 2v2" />
     </svg>
   );
 }
@@ -116,8 +132,21 @@ export function BrightnessIcon({ className }: { className?: string }) {
 export function LightModeIcon({ className }: { className?: string }) {
   return (
     <svg className={className} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
-      <path d="M3 18h18M3 6h18" />
-      <circle cx="12" cy="12" r="4" />
+      {/* Toggle switch icon for mode selection */}
+      <rect x="2" y="8" width="20" height="8" rx="4" />
+      <circle cx="8" cy="12" r="2.5" />
+      <circle cx="16" cy="12" r="2.5" />
+      <path d="M8 12h8" strokeOpacity="0.3" />
+    </svg>
+  );
+}
+
+export function WhiteLightIcon({ className }: { className?: string }) {
+  return (
+    <svg className={className} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
+      {/* Light bulb shape */}
+      <path d="M9 21h6M12 3a6 6 0 016 6c0 2.22-1.21 4.16-3 5.19V17a1 1 0 01-1 1h-4a1 1 0 01-1-1v-2.81C7.21 13.16 6 11.22 6 9a6 6 0 016-6z" />
+      <path d="M9 17h6" />
     </svg>
   );
 }
@@ -199,10 +228,24 @@ export function AIIcon({ className }: { className?: string }) {
 export function LayoutTileIcon({ className }: { className?: string }) {
   return (
     <svg className={className} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
-      <rect x="3" y="3" width="8" height="8" rx="1" />
-      <rect x="13" y="3" width="8" height="8" rx="1" />
-      <rect x="3" y="13" width="8" height="8" rx="1" />
-      <rect x="13" y="13" width="8" height="8" rx="1" />
+      {/* Grid layout icon */}
+      <rect x="3" y="3" width="7" height="7" rx="1" />
+      <rect x="14" y="3" width="7" height="7" rx="1" />
+      <rect x="3" y="14" width="7" height="7" rx="1" />
+      <rect x="14" y="14" width="7" height="7" rx="1" />
+    </svg>
+  );
+}
+
+export function TileViewIcon({ className }: { className?: string }) {
+  return (
+    <svg className={className} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
+      {/* Side by side windows */}
+      <rect x="2" y="4" width="9" height="16" rx="1" />
+      <rect x="13" y="4" width="9" height="16" rx="1" />
+      {/* Window title bars */}
+      <line x1="2" y1="7" x2="11" y2="7" />
+      <line x1="13" y1="7" x2="22" y2="7" />
     </svg>
   );
 }
@@ -220,8 +263,11 @@ export function LayoutStackIcon({ className }: { className?: string }) {
 export function View2DIcon({ className }: { className?: string }) {
   return (
     <svg className={className} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
-      <rect x="3" y="5" width="18" height="14" rx="2" />
-      <text x="8" y="15" fontSize="8" fill="currentColor" fontWeight="bold">2D</text>
+      {/* Simple flat rectangle representing 2D plane */}
+      <rect x="3" y="6" width="18" height="12" rx="1" />
+      {/* Horizontal lines to indicate flat surface */}
+      <line x1="6" y1="10" x2="18" y2="10" strokeOpacity="0.5" />
+      <line x1="6" y1="14" x2="18" y2="14" strokeOpacity="0.5" />
     </svg>
   );
 }
@@ -229,9 +275,22 @@ export function View2DIcon({ className }: { className?: string }) {
 export function View3DIcon({ className }: { className?: string }) {
   return (
     <svg className={className} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
-      <path d="M12 2L2 7l10 5 10-5-10-5z" />
-      <path d="M2 17l10 5 10-5" />
-      <path d="M2 12l10 5 10-5" />
+      {/* 3D cube - isometric style */}
+      <path d="M12 2l8 4v8l-8 4-8-4V6l8-4z" />
+      <path d="M12 10v8" />
+      <path d="M4 6l8 4 8-4" />
+    </svg>
+  );
+}
+
+export function ViewModeIcon({ className }: { className?: string }) {
+  return (
+    <svg className={className} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
+      {/* Eye with depth indicator */}
+      <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z" />
+      <circle cx="12" cy="12" r="3" />
+      {/* Depth lines */}
+      <path d="M12 5v-3M12 22v-3" strokeDasharray="2 2" />
     </svg>
   );
 }
@@ -240,6 +299,16 @@ export function ClickIcon({ className }: { className?: string }) {
   return (
     <svg className={className} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
       <path d="M6 3v12l4-4 2.5 6.5L15 16l-2.5-6.5H18L6 3z" />
+    </svg>
+  );
+}
+
+export function ExitIcon({ className }: { className?: string }) {
+  return (
+    <svg className={className} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
+      <path d="M9 21H5a2 2 0 01-2-2V5a2 2 0 012-2h4" />
+      <polyline points="16 17 21 12 16 7" />
+      <line x1="21" y1="12" x2="9" y2="12" />
     </svg>
   );
 }
